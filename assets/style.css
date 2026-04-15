@@ -1,0 +1,196 @@
+/* ─────────────────────────────────────────
+   style.css  |  공통 스타일
+   서하 진로취업 컨설턴트 홈페이지
+───────────────────────────────────────── */
+
+/* 구글 폰트는 각 HTML에서 import */
+
+/* ── 색상 변수 ── */
+:root {
+  --cream:      #F5F0E8;
+  --cream-dark: #EDE6DA;
+  --dark:       #1A1916;
+  --mid:        #5C5852;
+  --light:      #9E998F;
+  --accent:     #8B6E52;
+  --line:       rgba(26, 25, 22, 0.1);
+  --white:      #FDFAF5;
+}
+
+/* ── 리셋 ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--dark);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* ── 내부 페이지 공통 레이아웃 ── */
+
+/* 내부 페이지 헤더 (고정 네비) */
+.page-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.6rem 3.5rem;
+  background: var(--cream);
+  border-bottom: 1px solid var(--line);
+  transition: box-shadow 0.3s;
+}
+
+.page-nav.scrolled {
+  box-shadow: 0 2px 24px rgba(0,0,0,0.06);
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--dark);
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: var(--mid);
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active { color: var(--dark); }
+
+/* 내부 페이지 본문 영역 */
+.page-wrapper {
+  padding-top: 6rem;
+  min-height: 100vh;
+}
+
+/* 섹션 공통 */
+.section {
+  padding: 5rem 3.5rem;
+}
+
+.section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.3em;
+  color: var(--light);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--dark);
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.divider {
+  width: 36px;
+  height: 1px;
+  background: var(--accent);
+  margin: 2rem 0;
+}
+
+/* ── 버튼 ── */
+.btn {
+  display: inline-block;
+  padding: 0.9rem 2.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.btn-outline {
+  border: 1px solid var(--dark);
+  color: var(--dark);
+  background: transparent;
+}
+
+.btn-outline:hover {
+  background: var(--dark);
+  color: var(--cream);
+}
+
+.btn-fill {
+  background: var(--dark);
+  color: var(--cream);
+  border: 1px solid var(--dark);
+}
+
+.btn-fill:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ── 공통 푸터 ── */
+.page-footer {
+  padding: 2rem 3.5rem;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dark);
+}
+
+.footer-copy {
+  font-size: 0.7rem;
+  color: var(--light);
+  letter-spacing: 0.05em;
+}
+
+/* ── 모바일 공통 ── */
+@media (max-width: 768px) {
+  .page-nav { padding: 1.2rem 1.5rem; }
+  .nav-links { display: none; }
+  .section { padding: 3.5rem 1.5rem; }
+  .page-footer {
+    flex-direction: column;
+    gap: 0.8rem;
+    text-align: center;
+    padding: 1.8rem 1.5rem;
+  }
+}

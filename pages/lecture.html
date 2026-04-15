@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>강의 | 서하 진로취업 컨설턴트</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .lecture-header {
+      padding: 6rem 3.5rem 4rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* 프로그램 목록 */
+    .programs-section { padding: 5rem 3.5rem; border-bottom: 1px solid var(--line); }
+
+    .program-list { margin-top: 3rem; border-top: 1px solid var(--line); }
+
+    .program-item {
+      display: grid;
+      grid-template-columns: 56px 1fr 100px;
+      gap: 2rem;
+      align-items: center;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--line);
+      transition: padding-left 0.3s;
+      cursor: default;
+    }
+
+    .program-item:hover { padding-left: 0.8rem; }
+
+    .prog-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--light);
+    }
+
+    .prog-name {
+      font-size: 0.95rem;
+      font-weight: 400;
+      margin-bottom: 0.3rem;
+    }
+
+    .prog-target {
+      font-size: 0.78rem;
+      color: var(--light);
+      letter-spacing: 0.05em;
+    }
+
+    .prog-tag {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      padding: 0.35rem 0.8rem;
+      border: 1px solid var(--line);
+      color: var(--mid);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* 출강 기관 */
+    .clients-section {
+      background: var(--cream-dark);
+      padding: 5rem 3.5rem;
+    }
+
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      margin-top: 3rem;
+      border: 1px solid var(--line);
+    }
+
+    .client-item {
+      padding: 2rem;
+      background: var(--cream);
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--mid);
+      border: none;
+    }
+
+    /* 강의 섭외 안내 */
+    .hire-section {
+      padding: 5rem 3.5rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hire-section p {
+      font-size: 0.9rem;
+      line-height: 2;
+      color: var(--mid);
+      margin-bottom: 1.2rem;
+    }
+
+    .hire-details { display: flex; flex-direction: column; gap: 1rem; }
+
+    .hire-row {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.85rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hire-key {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--light);
+      text-transform: uppercase;
+      min-width: 80px;
+      padding-top: 0.1rem;
+    }
+
+    .hire-val { color: var(--mid); }
+
+    @media (max-width: 768px) {
+      .lecture-header, .programs-section, .clients-section { padding: 3rem 1.5rem; }
+      .clients-grid { grid-template-columns: repeat(2, 1fr); }
+      .hire-section { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.5rem; }
+      .program-item { grid-template-columns: 48px 1fr; }
+      .prog-tag { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="page-nav">
+    <a href="../index.html" class="nav-logo">서하</a>
+    <ul class="nav-links">
+      <li><a href="about.html">소개</a></li>
+      <li><a href="consulting.html">컨설팅</a></li>
+      <li><a href="lecture.html" class="active">강의</a></li>
+      <li><a href="contact.html">문의</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrapper">
+
+    <div class="lecture-header">
+      <span class="section-label">Lecture</span>
+      <h1 class="section-title">
+        현장에서 배우는<br><em>진짜 취업</em> 이야기
+      </h1>
+    </div>
+
+    <!-- 프로그램 목록 -->
+    <div class="programs-section">
+      <span class="section-label">Programs</span>
+      <h2 class="section-title">주요 프로그램</h2>
+
+      <div class="program-list">
+        <div class="program-item">
+          <span class="prog-num">01</span>
+          <div>
+            <p class="prog-name">진로 탐색 집중 과정</p>
+            <p class="prog-target">대학생 · 청년 구직자</p>
+          </div>
+          <span class="prog-tag">그룹 강의</span>
+        </div>
+        <div class="program-item">
+          <span class="prog-num">02</span>
+          <div>
+            <p class="prog-name">이력서·자기소개서 완성 캠프</p>
+            <p class="prog-target">취업 준비생 · 이직 희망자</p>
+          </div>
+          <span class="prog-tag">워크숍</span>
+        </div>
+        <div class="program-item">
+          <span class="prog-num">03</span>
+          <div>
+            <p class="prog-name">실전 면접 클리닉 특강</p>
+            <p class="prog-target">면접 앞둔 취준생</p>
+          </div>
+          <span class="prog-tag">특강</span>
+        </div>
+        <div class="program-item">
+          <span class="prog-num">04</span>
+          <div>
+            <p class="prog-name">중장년 재취업 경력 설계</p>
+            <p class="prog-target">40–60대 전직·재취업 희망자</p>
+          </div>
+          <span class="prog-tag">집중 과정</span>
+        </div>
+        <div class="program-item">
+          <span class="prog-num">05</span>
+          <div>
+            <p class="prog-name">기업 HRD 커리어 교육</p>
+            <p class="prog-target">기업 임직원 · HR 담당자</p>
+          </div>
+          <span class="prog-tag">기업 교육</span>
+        </div>
+        <div class="program-item">
+          <span class="prog-num">06</span>
+          <div>
+            <p class="prog-name">AI 시대 취업 전략 특강</p>
+            <p class="prog-target">전 연령대</p>
+          </div>
+          <span class="prog-tag">온·오프라인</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 출강 기관 -->
+    <div class="clients-section">
+      <span class="section-label">Clients</span>
+      <h2 class="section-title">출강 기관</h2>
+
+      <div class="clients-grid">
+        <div class="client-item">○○대학교</div>
+        <div class="client-item">○○고용센터</div>
+        <div class="client-item">○○여성인력개발센터</div>
+        <div class="client-item">○○기업</div>
+        <div class="client-item">○○일자리센터</div>
+        <div class="client-item">○○평생교육원</div>
+        <div class="client-item">○○훈련기관</div>
+        <div class="client-item">기관명 추가 가능</div>
+      </div>
+    </div>
+
+    <!-- 강의 섭외 -->
+    <div class="hire-section">
+      <div>
+        <span class="section-label">Book a Lecture</span>
+        <h2 class="section-title">강의 섭외<br>안내</h2>
+        <div class="divider"></div>
+        <p>
+          대학, 고용센터, 기업, 공공기관 등
+          다양한 기관에서 강의 섭외를 받고 있습니다.
+          강의 주제와 시간은 기관 상황에 맞게
+          유연하게 조율 가능합니다.
+        </p>
+        <a href="contact.html" class="btn btn-outline" style="margin-top:1rem;">섭외 문의하기</a>
+      </div>
+
+      <div class="hire-details">
+        <div class="hire-row">
+          <span class="hire-key">방식</span>
+          <span class="hire-val">대면 / 온라인 / 혼합 모두 가능</span>
+        </div>
+        <div class="hire-row">
+          <span class="hire-key">시간</span>
+          <span class="hire-val">1시간 ~ 2박3일 집중 과정</span>
+        </div>
+        <div class="hire-row">
+          <span class="hire-key">규모</span>
+          <span class="hire-val">소그룹(10명) ~ 대규모(200명+)</span>
+        </div>
+        <div class="hire-row">
+          <span class="hire-key">주제</span>
+          <span class="hire-val">진로 탐색, 취업 전략, 면접, HRD 등</span>
+        </div>
+        <div class="hire-row">
+          <span class="hire-key">문의</span>
+          <span class="hire-val">seoha.job@gmail.com</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="page-footer">
+    <span class="footer-logo">서하</span>
+    <span class="footer-copy">© 2025 서하 진로취업컨설팅</span>
+  </footer>
+
+  <script src="../assets/main.js"></script>
+</body>
+</html>
