@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>서하 | 진로취업 전문 컨설턴트</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    /* ── 홈 전용 스타일 ── */
+    body { overflow-x: hidden; }
+
+    /* 네비게이션 */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.8rem 3.5rem;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      letter-spacing: 0.2em;
+      color: var(--dark);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--mid);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--dark); }
+
+    /* ── 메인 그리드 (TENOKK 스타일) ── */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 55vh 45vh;
+      min-height: 100vh;
+      gap: 3px;
+      padding-top: 0;
+    }
+
+    /* 각 그리드 셀 */
+    .grid-item {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      background: var(--cream-dark);
+    }
+
+    /* 사진 */
+    .grid-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  filter 0.5s ease;
+      display: block;
+    }
+
+    /* 사진 없을 때 placeholder */
+    .grid-item .placeholder {
+      width: 100%;
+      height: 100%;
+      background: var(--cream-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.8rem;
+      transition: filter 0.5s ease;
+    }
+
+    .placeholder-icon {
+      font-size: 2.5rem;
+      opacity: 0.2;
+    }
+
+    .placeholder-text {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--light);
+      text-transform: uppercase;
+    }
+
+    /* 호버 오버레이 */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(18, 16, 14, 0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.5s ease;
+      gap: 0.6rem;
+    }
+
+    .overlay-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: rgba(244, 240, 232, 0);
+      letter-spacing: 0.1em;
+      transition: color 0.4s ease 0.05s, transform 0.4s ease 0.05s;
+      transform: translateY(12px);
+    }
+
+    .overlay-sub {
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      color: rgba(244, 240, 232, 0);
+      text-transform: uppercase;
+      transition: color 0.4s ease 0.1s, transform 0.4s ease 0.1s;
+      transform: translateY(12px);
+    }
+
+    .overlay-line {
+      width: 0px;
+      height: 1px;
+      background: rgba(244, 240, 232, 0.6);
+      transition: width 0.4s ease 0.15s;
+      margin-bottom: 0.3rem;
+    }
+
+    /* 호버 시 */
+    .grid-item:hover .grid-overlay {
+      background: rgba(18, 16, 14, 0.55);
+    }
+
+    .grid-item:hover img {
+      transform: scale(1.04);
+    }
+
+    .grid-item:hover .placeholder {
+      filter: brightness(0.6);
+    }
+
+    .grid-item:hover .overlay-label {
+      color: rgba(244, 240, 232, 1);
+      transform: translateY(0);
+    }
+
+    .grid-item:hover .overlay-sub {
+      color: rgba(244, 240, 232, 0.75);
+      transform: translateY(0);
+    }
+
+    .grid-item:hover .overlay-line {
+      width: 40px;
+    }
+
+    /* 그리드 레이아웃 특수 배치 */
+    .grid-item.span-row { grid-row: span 2; }
+
+    /* 하단 태그라인 */
+    .tagline {
+      padding: 2.5rem 3.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid var(--line);
+      background: var(--cream);
+    }
+
+    .tagline-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--mid);
+    }
+
+    .tagline-text strong {
+      font-weight: 500;
+      color: var(--dark);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-size: 1.15rem;
+    }
+
+    /* 모바일 */
+    @media (max-width: 768px) {
+      .nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+
+      .hero-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 35vw 35vw 35vw;
+      }
+
+      .grid-item.span-row { grid-row: span 1; }
+
+      .overlay-label { font-size: 1.2rem; }
+      .tagline { padding: 1.8rem 1.5rem; }
+      .tagline-text { font-size: 0.85rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 네비게이션 -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">서하</a>
+    <ul class="nav-links">
+      <li><a href="pages/about.html">소개</a></li>
+      <li><a href="pages/consulting.html">컨설팅</a></li>
+      <li><a href="pages/lecture.html">강의</a></li>
+      <li><a href="pages/contact.html">문의</a></li>
+    </ul>
+  </nav>
+
+  <!-- 메인 이미지 그리드 네비게이션 -->
+  <main class="hero-grid">
+
+    <!-- 1. 소개 — 세로로 긴 셀 (왼쪽) -->
+    <a href="pages/about.html" class="grid-item span-row">
+      <!-- 📌 여기에 본인 사진을 넣으세요 -->
+      <!-- <img src="assets/images/about.jpg" alt="강사 소개"> -->
+      <div class="placeholder">
+        <span class="placeholder-icon">📷</span>
+        <span class="placeholder-text">대표 사진</span>
+      </div>
+      <div class="grid-overlay">
+        <div class="overlay-line"></div>
+        <span class="overlay-label">소개</span>
+        <span class="overlay-sub">About</span>
+      </div>
+    </a>
+
+    <!-- 2. 컨설팅 (오른쪽 상단 왼쪽) -->
+    <a href="pages/consulting.html" class="grid-item">
+      <!-- <img src="assets/images/consulting.jpg" alt="취업 컨설팅"> -->
+      <div class="placeholder">
+        <span class="placeholder-icon">📷</span>
+        <span class="placeholder-text">컨설팅 사진</span>
+      </div>
+      <div class="grid-overlay">
+        <div class="overlay-line"></div>
+        <span class="overlay-label">컨설팅</span>
+        <span class="overlay-sub">Consulting</span>
+      </div>
+    </a>
+
+    <!-- 3. 강의 (오른쪽 상단 오른쪽) -->
+    <a href="pages/lecture.html" class="grid-item">
+      <!-- <img src="assets/images/lecture.jpg" alt="강의 · 특강"> -->
+      <div class="placeholder">
+        <span class="placeholder-icon">📷</span>
+        <span class="placeholder-text">강의 현장 사진</span>
+      </div>
+      <div class="grid-overlay">
+        <div class="overlay-line"></div>
+        <span class="overlay-label">강의</span>
+        <span class="overlay-sub">Lecture</span>
+      </div>
+    </a>
+
+    <!-- 4. 문의 (오른쪽 하단 왼쪽) -->
+    <a href="pages/contact.html" class="grid-item">
+      <!-- <img src="assets/images/contact.jpg" alt="문의"> -->
+      <div class="placeholder">
+        <span class="placeholder-icon">📷</span>
+        <span class="placeholder-text">분위기 사진</span>
+      </div>
+      <div class="grid-overlay">
+        <div class="overlay-line"></div>
+        <span class="overlay-label">문의</span>
+        <span class="overlay-sub">Contact</span>
+      </div>
+    </a>
+
+    <!-- 5. 추가 이미지 (오른쪽 하단 오른쪽) — 장식용 또는 후기 사진 -->
+    <div class="grid-item">
+      <!-- <img src="assets/images/gallery.jpg" alt="현장"> -->
+      <div class="placeholder">
+        <span class="placeholder-icon">📷</span>
+        <span class="placeholder-text">현장 사진</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 하단 태그라인 -->
+  <footer class="tagline">
+    <p class="tagline-text">
+      The Language of Career &nbsp;by&nbsp; <strong>서하</strong>
+    </p>
+  </footer>
+
+  <script src="assets/main.js"></script>
+</body>
+</html>
