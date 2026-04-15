@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 | 서하 홈페이지</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #F5F0E8;
+      --dark: #1A1916;
+      --mid: #5C5852;
+      --light: #9E998F;
+      --accent: #8B6E52;
+      --line: rgba(26,25,22,0.1);
+      --bg: #FAFAF8;
+      --card: #FFFFFF;
+      --green: #2D6A4F;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 300;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+    }
+
+    /* ── 비밀번호 화면 ── */
+    #lock-screen {
+      position: fixed; inset: 0;
+      background: var(--cream);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .lock-logo {
+      font-size: 0.85rem;
+      letter-spacing: 0.3em;
+      color: var(--light);
+      text-transform: uppercase;
+    }
+
+    .lock-title {
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--dark);
+      letter-spacing: 0.05em;
+    }
+
+    .lock-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      width: 320px;
+    }
+
+    .lock-box input {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border: 1px solid var(--line);
+      background: white;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      letter-spacing: 0.2em;
+      color: var(--dark);
+      transition: border-color 0.2s;
+      border-radius: 0;
+    }
+
+    .lock-box input:focus { border-color: var(--accent); }
+
+    .lock-btn {
+      padding: 0.9rem;
+      background: var(--dark);
+      color: var(--cream);
+      border: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s;
+    }
+
+    .lock-btn:hover { background: var(--accent); }
+
+    .lock-error {
+      font-size: 0.78rem;
+      color: #C0392B;
+      text-align: center;
+      height: 1rem;
+    }
+
+    /* ── 관리자 레이아웃 ── */
+    #admin-app { display: none; }
+
+    .admin-header {
+      background: var(--dark);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .admin-header-left {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .admin-logo {
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: rgba(245,240,232,0.5);
+      text-transform: uppercase;
+    }
+
+    .admin-title {
+      font-size: 0.88rem;
+      color: var(--cream);
+      font-weight: 400;
+    }
+
+    .header-btns { display: flex; gap: 0.8rem; align-items: center; }
+
+    .btn-visit {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: rgba(245,240,232,0.6);
+      text-decoration: none;
+      border: 1px solid rgba(245,240,232,0.2);
+      padding: 0.4rem 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-visit:hover { color: var(--cream); border-color: rgba(245,240,232,0.5); }
+
+    .btn-logout {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: rgba(245,240,232,0.5);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.4rem;
+    }
+
+    .btn-logout:hover { color: var(--cream); }
+
+    /* 탭 네비 */
+    .admin-tabs {
+      background: white;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      overflow-x: auto;
+      padding: 0 2rem;
+    }
+
+    .tab-btn {
+      padding: 1rem 1.2rem;
+      font-size: 0.78rem;
+      color: var(--light);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: 'Noto Sans KR', sans-serif;
+      letter-spacing: 0.05em;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover { color: var(--dark); }
+    .tab-btn.on { color: var(--dark); border-bottom-color: var(--accent); font-weight: 500; }
+
+    /* 본문 */
+    .admin-body { max-width: 800px; margin: 0 auto; padding: 2.5rem 2rem; }
+
+    .tab-pane { display: none; }
+    .tab-pane.on { display: block; }
+
+    /* 섹션 카드 */
+    .edit-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .edit-card h3 {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--mid);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .field { margin-bottom: 1.2rem; }
+
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--light);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid var(--line);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 300;
+      color: var(--dark);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s;
+      border-radius: 2px;
+    }
+
+    .field input:focus,
+    .field textarea:focus { border-color: var(--accent); background: white; }
+
+    .field textarea { resize: vertical; min-height: 80px; line-height: 1.7; }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* 반복 항목 (프로그램, 후기 등) */
+    .repeat-item {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1.2rem;
+      margin-bottom: 0.8rem;
+      background: var(--bg);
+      position: relative;
+    }
+
+    .repeat-item .del-btn {
+      position: absolute;
+      top: 0.8rem; right: 0.8rem;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--light);
+      font-size: 0.7rem;
+      padding: 0.25rem 0.6rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    .repeat-item .del-btn:hover { border-color: #C0392B; color: #C0392B; }
+
+    .add-btn {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px dashed var(--line);
+      background: transparent;
+      color: var(--light);
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: 2px;
+    }
+
+    .add-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* 저장 바 */
+    .save-bar {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid var(--line);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 -2rem -2.5rem;
+    }
+
+    .save-hint { font-size: 0.78rem; color: var(--light); }
+
+    .save-btn {
+      padding: 0.8rem 2rem;
+      background: var(--dark);
+      color: var(--cream);
+      border: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-radius: 2px;
+    }
+
+    .save-btn:hover { background: var(--accent); }
+
+    .save-ok {
+      font-size: 0.78rem;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.3s;
+      margin-left: 1rem;
+    }
+
+    .save-ok.show { opacity: 1; }
+
+    /* 내보내기 안내 */
+    .export-box {
+      background: #EBF5EE;
+      border: 1px solid #A8D5B5;
+      border-radius: 4px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .export-box h4 {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+
+    .export-box p {
+      font-size: 0.78rem;
+      color: #3D7A55;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .export-btn {
+      padding: 0.6rem 1.4rem;
+      background: var(--green);
+      color: white;
+      border: none;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-radius: 2px;
+      letter-spacing: 0.05em;
+    }
+
+    .export-btn:hover { background: #1E4D38; }
+
+    /* 비밀번호 변경 */
+    .pw-section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 2rem;
+    }
+
+    .pw-section h3 {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      color: var(--mid);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .admin-body { padding: 1.5rem 1rem; }
+      .field-row { grid-template-columns: 1fr; }
+      .save-bar { margin: 0 -1rem -1.5rem; padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 비밀번호 화면 -->
+<div id="lock-screen">
+  <span class="lock-logo">서하 · 진로취업 컨설턴트</span>
+  <span class="lock-title">관리자 로그인</span>
+  <div class="lock-box">
+    <input type="password" id="pw-input" placeholder="비밀번호 입력"
+           onkeydown="if(event.key==='Enter') checkPw()">
+    <button class="lock-btn" onclick="checkPw()">확인</button>
+    <p class="lock-error" id="pw-error"></p>
+  </div>
+  <p style="font-size:0.72rem;color:var(--light);">초기 비밀번호: admin1234</p>
+</div>
+
+<!-- 관리자 앱 -->
+<div id="admin-app">
+
+  <header class="admin-header">
+    <div class="admin-header-left">
+      <span class="admin-logo">서하</span>
+      <span class="admin-title">홈페이지 관리자</span>
+    </div>
+    <div class="header-btns">
+      <a href="../index.html" target="_blank" class="btn-visit">홈페이지 보기 →</a>
+      <button class="btn-logout" onclick="logout()">로그아웃</button>
+    </div>
+  </header>
+
+  <nav class="admin-tabs">
+    <button class="tab-btn on" onclick="switchTab('home',this)">🏠 홈 화면</button>
+    <button class="tab-btn" onclick="switchTab('about',this)">👤 소개</button>
+    <button class="tab-btn" onclick="switchTab('consulting',this)">📄 컨설팅</button>
+    <button class="tab-btn" onclick="switchTab('lecture',this)">🎤 강의</button>
+    <button class="tab-btn" onclick="switchTab('contact',this)">✉️ 연락처</button>
+    <button class="tab-btn" onclick="switchTab('settings',this)">⚙️ 설정</button>
+  </nav>
+
+  <div class="admin-body">
+
+    <!-- ── 홈 화면 탭 ── -->
+    <div class="tab-pane on" id="tab-home">
+      <div class="edit-card">
+        <h3>기본 정보</h3>
+        <div class="field">
+          <label>이름 (로고 · 푸터에 표시)</label>
+          <input type="text" id="h-name" placeholder="서하">
+        </div>
+        <div class="field">
+          <label>하단 태그라인</label>
+          <input type="text" id="h-tagline" placeholder="The Language of Career by 서하">
+        </div>
+      </div>
+
+      <div class="edit-card">
+        <h3>이미지 그리드 — 메뉴 이름</h3>
+        <p style="font-size:0.78rem;color:var(--light);margin-bottom:1rem;">
+          각 그리드 칸에 마우스를 올렸을 때 표시되는 이름이에요.
+        </p>
+        <div class="field-row">
+          <div class="field"><label>① 대표 사진 칸</label><input type="text" id="g-1" placeholder="소개"></div>
+          <div class="field"><label>② 컨설팅 칸</label><input type="text" id="g-2" placeholder="컨설팅"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>③ 강의 칸</label><input type="text" id="g-3" placeholder="강의"></div>
+          <div class="field"><label>④ 문의 칸</label><input type="text" id="g-4" placeholder="문의"></div>
+        </div>
+      </div>
+
+      <div class="save-bar">
+        <span class="save-hint">저장 후 홈페이지에 바로 반영돼요</span>
+        <div style="display:flex;align-items:center;">
+          <span class="save-ok" id="ok-home">✓ 저장됨</span>
+          <button class="save-btn" onclick="saveTab('home')">저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 소개 탭 ── -->
+    <div class="tab-pane" id="tab-about">
+      <div class="edit-card">
+        <h3>소개 페이지</h3>
+        <div class="field">
+          <label>타이틀</label>
+          <input type="text" id="a-title" placeholder="진로와 일을 연결하는 전문가">
+        </div>
+        <div class="field">
+          <label>첫 번째 소개 문단</label>
+          <textarea id="a-p1" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label>두 번째 소개 문단</label>
+          <textarea id="a-p2" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label>자격증·태그 (쉼표로 구분)</label>
+          <input type="text" id="a-tags" placeholder="직업상담사 1급, GCDF 경력개발전문가, NCS 공인강사">
+        </div>
+      </div>
+
+      <div class="edit-card">
+        <h3>경력 타임라인</h3>
+        <div id="career-list"></div>
+        <button class="add-btn" onclick="addCareer()">+ 경력 항목 추가</button>
+      </div>
+
+      <div class="save-bar">
+        <span class="save-hint">저장 후 소개 페이지에 반영돼요</span>
+        <div style="display:flex;align-items:center;">
+          <span class="save-ok" id="ok-about">✓ 저장됨</span>
+          <button class="save-btn" onclick="saveTab('about')">저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 컨설팅 탭 ── -->
+    <div class="tab-pane" id="tab-consulting">
+      <div class="edit-card">
+        <h3>컨설팅 페이지 상단</h3>
+        <div class="field">
+          <label>타이틀</label>
+          <input type="text" id="c-title" placeholder="당신만의 커리어를 설계합니다">
+        </div>
+        <div class="field">
+          <label>부제목 설명</label>
+          <textarea id="c-sub" rows="3"></textarea>
+        </div>
+      </div>
+
+      <div class="edit-card">
+        <h3>수강생 후기</h3>
+        <div id="reviews-list"></div>
+        <button class="add-btn" onclick="addReview()">+ 후기 추가</button>
+      </div>
+
+      <div class="save-bar">
+        <span class="save-hint">저장 후 컨설팅 페이지에 반영돼요</span>
+        <div style="display:flex;align-items:center;">
+          <span class="save-ok" id="ok-consulting">✓ 저장됨</span>
+          <button class="save-btn" onclick="saveTab('consulting')">저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 강의 탭 ── -->
+    <div class="tab-pane" id="tab-lecture">
+      <div class="edit-card">
+        <h3>강의 페이지 상단</h3>
+        <div class="field">
+          <label>타이틀</label>
+          <input type="text" id="l-title" placeholder="현장에서 배우는 진짜 취업 이야기">
+        </div>
+      </div>
+
+      <div class="edit-card">
+        <h3>프로그램 목록</h3>
+        <div id="programs-list"></div>
+        <button class="add-btn" onclick="addProgram()">+ 프로그램 추가</button>
+      </div>
+
+      <div class="edit-card">
+        <h3>출강 기관</h3>
+        <div class="field">
+          <label>기관명 (쉼표로 구분)</label>
+          <textarea id="l-clients" rows="3" placeholder="○○대학교, ○○고용센터, ○○기업"></textarea>
+        </div>
+      </div>
+
+      <div class="save-bar">
+        <span class="save-hint">저장 후 강의 페이지에 반영돼요</span>
+        <div style="display:flex;align-items:center;">
+          <span class="save-ok" id="ok-lecture">✓ 저장됨</span>
+          <button class="save-btn" onclick="saveTab('lecture')">저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 연락처 탭 ── -->
+    <div class="tab-pane" id="tab-contact">
+      <div class="edit-card">
+        <h3>연락처 정보</h3>
+        <div class="field-row">
+          <div class="field"><label>이메일</label><input type="text" id="ct-email" placeholder="seoha.job@gmail.com"></div>
+          <div class="field"><label>전화번호</label><input type="text" id="ct-phone" placeholder="010-0000-0000"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>카카오톡</label><input type="text" id="ct-kakao" placeholder="오픈채팅 링크 또는 아이디"></div>
+          <div class="field"><label>인스타그램</label><input type="text" id="ct-sns" placeholder="@아이디"></div>
+        </div>
+        <div class="field">
+          <label>안내 문구</label>
+          <textarea id="ct-msg" rows="3" placeholder="진로 고민, 취업 준비, 강의 섭외 등 어떤 문의든 편하게 연락해 주세요."></textarea>
+        </div>
+      </div>
+
+      <div class="save-bar">
+        <span class="save-hint">저장 후 문의 페이지에 반영돼요</span>
+        <div style="display:flex;align-items:center;">
+          <span class="save-ok" id="ok-contact">✓ 저장됨</span>
+          <button class="save-btn" onclick="saveTab('contact')">저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── 설정 탭 ── -->
+    <div class="tab-pane" id="tab-settings">
+
+      <div class="export-box">
+        <h4>📤 변경사항 내보내기 (중요!)</h4>
+        <p>
+          관리자 패널에서 저장한 내용은 지금 이 브라우저에만 저장돼요.<br>
+          <strong>다른 사람들도 보려면</strong> 아래 버튼으로 파일을 내보낸 뒤<br>
+          GitHub에 업로드해야 해요. (방법은 저장 후 안내드려요)
+        </p>
+        <button class="export-btn" onclick="exportContent()">📄 content.json 내보내기</button>
+      </div>
+
+      <div class="pw-section">
+        <h3>비밀번호 변경</h3>
+        <div class="field"><label>현재 비밀번호</label><input type="password" id="pw-cur"></div>
+        <div class="field"><label>새 비밀번호</label><input type="password" id="pw-new"></div>
+        <div class="field"><label>새 비밀번호 확인</label><input type="password" id="pw-cfm"></div>
+        <p id="pw-msg" style="font-size:0.78rem;height:1rem;margin-bottom:1rem;"></p>
+        <button class="save-btn" onclick="changePw()">비밀번호 변경</button>
+      </div>
+    </div>
+
+  </div><!-- /admin-body -->
+</div><!-- /admin-app -->
+
+<script>
+/* ── 기본 데이터 ── */
+const DEFAULTS = {
+  home: {
+    name: '서하',
+    tagline: 'The Language of Career  by  서하',
+    g1: '소개', g2: '컨설팅', g3: '강의', g4: '문의'
+  },
+  about: {
+    title: '진로와 일을 연결하는 전문가',
+    p1: '안녕하세요, 진로취업 전문 컨설턴트 서하입니다. 15년간 대학, 고용센터, 기업 HRD 현장에서 커리어 전 생애주기를 함께해 왔습니다.',
+    p2: '국가공인 직업상담사, 경력개발전문가(GCDF) 자격을 보유하고 고용부 산하 위탁기관 및 주요 대학교에서 정기 출강하고 있습니다.',
+    tags: '직업상담사 1급, GCDF 경력개발전문가, NCS 공인강사, 면접관 코칭, HRD 컨설팅',
+    careers: [
+      { year: '2024 –', title: '소속 기관 또는 활동명', desc: '담당 역할 및 내용을 입력하세요' },
+      { year: '2020 – 2024', title: '소속 기관 또는 활동명', desc: '담당 역할 및 내용을 입력하세요' },
+      { year: '2010 – 2020', title: '소속 기관 또는 활동명', desc: '담당 역할 및 내용을 입력하세요' }
+    ]
+  },
+  consulting: {
+    title: '당신만의 커리어를 설계합니다',
+    sub: '진로 탐색부터 서류 작성, 면접 코칭까지 취업의 전 과정을 함께합니다. 15년 현장 경험을 바탕으로 한 실전 중심 컨설팅입니다.',
+    reviews: [
+      { text: '막연했던 진로가 상담 3회 만에 방향이 잡혔습니다. 원하던 기업에 합격했어요.', name: '김○○ (26세)', role: '대기업 마케팅팀 취업 성공' },
+      { text: '10년 경력의 이직이라 막막했는데 서류 통과율이 눈에 띄게 달라졌습니다.', name: '이○○ (35세)', role: 'IT기업 팀장급 이직 성공' },
+      { text: '모의 면접이 실전 같아서 놀랐습니다. 최종 합격 소식 전할 수 있어 기쁩니다!', name: '박○○ (28세)', role: '공기업 최종 합격' }
+    ]
+  },
+  lecture: {
+    title: '현장에서 배우는 진짜 취업 이야기',
+    clients: '○○대학교, ○○고용센터, ○○여성인력개발센터, ○○기업, ○○일자리센터, ○○평생교육원',
+    programs: [
+      { name: '진로 탐색 집중 과정', target: '대학생 · 청년 구직자', tag: '그룹 강의' },
+      { name: '이력서·자기소개서 완성 캠프', target: '취업 준비생 · 이직 희망자', tag: '워크숍' },
+      { name: '실전 면접 클리닉 특강', target: '면접 앞둔 취준생', tag: '특강' },
+      { name: '중장년 재취업 경력 설계', target: '40–60대 전직·재취업 희망자', tag: '집중 과정' },
+      { name: '기업 HRD 커리어 교육', target: '기업 임직원 · HR 담당자', tag: '기업 교육' }
+    ]
+  },
+  contact: {
+    email: 'seoha.job@gmail.com',
+    phone: '010-0000-0000',
+    kakao: '카카오 오픈채팅 링크 입력',
+    sns: '@인스타그램 아이디',
+    msg: '진로 고민, 취업 준비, 강의 섭외 등\n어떤 문의든 편하게 연락해 주세요.\n48시간 이내 꼭 답변 드립니다.'
+  }
+};
+
+/* ── 저장·불러오기 ── */
+function getData(key) {
+  try {
+    const v = localStorage.getItem('seoha_' + key);
+    return v ? JSON.parse(v) : JSON.parse(JSON.stringify(DEFAULTS[key]));
+  } catch { return JSON.parse(JSON.stringify(DEFAULTS[key])); }
+}
+function setData(key, val) {
+  localStorage.setItem('seoha_' + key, JSON.stringify(val));
+}
+
+/* ── 비밀번호 ── */
+function checkPw() {
+  const pw = localStorage.getItem('seoha_pw') || 'admin1234';
+  const input = document.getElementById('pw-input').value;
+  if (input === pw) {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    initForms();
+  } else {
+    document.getElementById('pw-error').textContent = '비밀번호가 틀렸습니다';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+function logout() {
+  document.getElementById('lock-screen').style.display = 'flex';
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+}
+
+function changePw() {
+  const cur = localStorage.getItem('seoha_pw') || 'admin1234';
+  const c = document.getElementById('pw-cur').value;
+  const n = document.getElementById('pw-new').value;
+  const cf = document.getElementById('pw-cfm').value;
+  const msg = document.getElementById('pw-msg');
+  if (c !== cur) { msg.textContent = '현재 비밀번호가 틀렸습니다'; msg.style.color = '#C0392B'; return; }
+  if (n.length < 4) { msg.textContent = '비밀번호는 4자 이상이어야 합니다'; msg.style.color = '#C0392B'; return; }
+  if (n !== cf) { msg.textContent = '새 비밀번호가 일치하지 않습니다'; msg.style.color = '#C0392B'; return; }
+  localStorage.setItem('seoha_pw', n);
+  msg.textContent = '✓ 비밀번호가 변경되었습니다';
+  msg.style.color = '#2D6A4F';
+  document.getElementById('pw-cur').value = '';
+  document.getElementById('pw-new').value = '';
+  document.getElementById('pw-cfm').value = '';
+}
+
+/* ── 탭 전환 ── */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('tab-' + name).classList.add('on');
+  btn.classList.add('on');
+}
+
+/* ── 폼 초기화 ── */
+function initForms() {
+  // 홈
+  const h = getData('home');
+  document.getElementById('h-name').value = h.name;
+  document.getElementById('h-tagline').value = h.tagline;
+  document.getElementById('g-1').value = h.g1;
+  document.getElementById('g-2').value = h.g2;
+  document.getElementById('g-3').value = h.g3;
+  document.getElementById('g-4').value = h.g4;
+
+  // 소개
+  const a = getData('about');
+  document.getElementById('a-title').value = a.title;
+  document.getElementById('a-p1').value = a.p1;
+  document.getElementById('a-p2').value = a.p2;
+  document.getElementById('a-tags').value = a.tags;
+  renderCareers(a.careers);
+
+  // 컨설팅
+  const c = getData('consulting');
+  document.getElementById('c-title').value = c.title;
+  document.getElementById('c-sub').value = c.sub;
+  renderReviews(c.reviews);
+
+  // 강의
+  const l = getData('lecture');
+  document.getElementById('l-title').value = l.title;
+  document.getElementById('l-clients').value = l.clients;
+  renderPrograms(l.programs);
+
+  // 연락처
+  const ct = getData('contact');
+  document.getElementById('ct-email').value = ct.email;
+  document.getElementById('ct-phone').value = ct.phone;
+  document.getElementById('ct-kakao').value = ct.kakao;
+  document.getElementById('ct-sns').value = ct.sns;
+  document.getElementById('ct-msg').value = ct.msg;
+}
+
+/* ── 저장 ── */
+function saveTab(tab) {
+  if (tab === 'home') {
+    setData('home', {
+      name: v('h-name'), tagline: v('h-tagline'),
+      g1: v('g-1'), g2: v('g-2'), g3: v('g-3'), g4: v('g-4')
+    });
+  } else if (tab === 'about') {
+    const careers = collectItems('career-list', ['year', 'title', 'desc']);
+    setData('about', { title: v('a-title'), p1: v('a-p1'), p2: v('a-p2'), tags: v('a-tags'), careers });
+  } else if (tab === 'consulting') {
+    const reviews = collectItems('reviews-list', ['text', 'name', 'role']);
+    setData('consulting', { title: v('c-title'), sub: v('c-sub'), reviews });
+  } else if (tab === 'lecture') {
+    const programs = collectItems('programs-list', ['name', 'target', 'tag']);
+    setData('lecture', { title: v('l-title'), clients: v('l-clients'), programs });
+  } else if (tab === 'contact') {
+    setData('contact', {
+      email: v('ct-email'), phone: v('ct-phone'),
+      kakao: v('ct-kakao'), sns: v('ct-sns'), msg: v('ct-msg')
+    });
+  }
+  const ok = document.getElementById('ok-' + tab);
+  ok.classList.add('show');
+  setTimeout(() => ok.classList.remove('show'), 2500);
+}
+
+function v(id) { return document.getElementById(id)?.value || ''; }
+
+function collectItems(listId, fields) {
+  const items = [];
+  document.querySelectorAll('#' + listId + ' .repeat-item').forEach(el => {
+    const obj = {};
+    fields.forEach(f => { obj[f] = el.querySelector('[data-f="' + f + '"]')?.value || ''; });
+    items.push(obj);
+  });
+  return items;
+}
+
+/* ── 경력 ── */
+function renderCareers(list) {
+  document.getElementById('career-list').innerHTML = list.map((c, i) => `
+    <div class="repeat-item">
+      <button class="del-btn" onclick="this.closest('.repeat-item').remove()">삭제</button>
+      <div class="field"><label>기간</label><input type="text" data-f="year" value="${esc(c.year)}" placeholder="2020 – 2024"></div>
+      <div class="field"><label>기관/직책</label><input type="text" data-f="title" value="${esc(c.title)}" placeholder="소속 기관 또는 직책"></div>
+      <div class="field"><label>내용</label><input type="text" data-f="desc" value="${esc(c.desc)}" placeholder="담당 업무"></div>
+    </div>`).join('');
+}
+function addCareer() {
+  const d = getData('about');
+  d.careers.push({ year: '', title: '', desc: '' });
+  renderCareers(d.careers);
+}
+
+/* ── 후기 ── */
+function renderReviews(list) {
+  document.getElementById('reviews-list').innerHTML = list.map(r => `
+    <div class="repeat-item">
+      <button class="del-btn" onclick="this.closest('.repeat-item').remove()">삭제</button>
+      <div class="field"><label>후기 내용</label><textarea data-f="text" rows="3">${esc(r.text)}</textarea></div>
+      <div class="field-row">
+        <div class="field"><label>이름</label><input type="text" data-f="name" value="${esc(r.name)}" placeholder="김○○ (26세)"></div>
+        <div class="field"><label>성과</label><input type="text" data-f="role" value="${esc(r.role)}" placeholder="대기업 취업 성공"></div>
+      </div>
+    </div>`).join('');
+}
+function addReview() {
+  const d = getData('consulting');
+  d.reviews.push({ text: '', name: '', role: '' });
+  renderReviews(d.reviews);
+}
+
+/* ── 프로그램 ── */
+function renderPrograms(list) {
+  document.getElementById('programs-list').innerHTML = list.map(p => `
+    <div class="repeat-item">
+      <button class="del-btn" onclick="this.closest('.repeat-item').remove()">삭제</button>
+      <div class="field"><label>프로그램명</label><input type="text" data-f="name" value="${esc(p.name)}" placeholder="프로그램 이름"></div>
+      <div class="field-row">
+        <div class="field"><label>대상</label><input type="text" data-f="target" value="${esc(p.target)}" placeholder="대학생 · 청년 구직자"></div>
+        <div class="field"><label>태그</label><input type="text" data-f="tag" value="${esc(p.tag)}" placeholder="특강"></div>
+      </div>
+    </div>`).join('');
+}
+function addProgram() {
+  const d = getData('lecture');
+  d.programs.push({ name: '', target: '', tag: '' });
+  renderPrograms(d.programs);
+}
+
+/* ── 내보내기 ── */
+function exportContent() {
+  const all = {
+    home: getData('home'),
+    about: getData('about'),
+    consulting: getData('consulting'),
+    lecture: getData('lecture'),
+    contact: getData('contact')
+  };
+  const blob = new Blob([JSON.stringify(all, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'content.json';
+  a.click();
+  alert('📥 content.json 파일이 다운로드됐어요!\n\nGitHub → seoha-career 저장소 → data 폴더에 이 파일을 업로드하면\n모든 방문자에게 변경사항이 반영돼요.');
+}
+
+function esc(s) { return (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+</script>
+</body>
+</html>
